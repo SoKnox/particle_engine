@@ -17,6 +17,7 @@
  * Mouse click pushes away near by particles (old)
  * 
  * Cows collide with eachother
+ * edit
  */
 
 
@@ -39,7 +40,7 @@ public class Beam
         this.x =x;
         this.y = y;
         this.length = 100;//leanghth
-        this.width = 40; //end width
+        this.width = 39; //end width
         this.active = false; //does not show up until b is pressed
     }
 
