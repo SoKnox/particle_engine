@@ -1,20 +1,16 @@
 /*
  * Sophie Knox
- * Particle Engine 2
- * 9/28/24
+ * Particle Engine 3
+ * 9/30/24
  * This project creates three sublasses of particles: an alien spaceship, cow, and stars that are confined to bounce around in the screen
- * Each sublass has 10 instances and the background is moving static
- * This class is a subclass of particle draws the star paricles and implements the white flash
+ * This class draws star particle, creates bounding box for bullet collisons
  * 
- * B or b creates a beam under spaceship (new)
- * S or s turns stars white for a second (new)
- * R or r randomizes cows position (old)
- * Up and Down arrows contols speed of all particles (old)
+ * I am attempting extra credit
+ * Goal of game: Shoot all the stars. Each star shot is a point. If you shoot a cow you automatically loose.
+ * Left and right arrows contol spaceship's x position
+ * spacebar shoots bullet
+ * IF YOU CANT BEAT GAME, CHANGE STAR # TO 1 IN PLAYSTATE
  * 
- * Mouse released changes alien color to a random color (new)
- * Mouse dragged released star particles (old)
- * Mouse position changes cow color (old)
- * Mouse click pushes away near by particles (old)
  * 
  * Cows collide with eachother
  */
@@ -22,61 +18,69 @@
  package com.particle_engine_1;
 
  import processing.core.PApplet;
+ import processing.core.PConstants;
+ import processing.core.PVector;
  
  public class Star extends Particle 
  {
-     private static boolean flash = false; //tracks flash
-     private static long flashStartTime = 0; // Track when the flash started
-     private static final long FLASH_DURATION = 1000; //duration in millisec
+     private float radius;
+     private int points;
+     private float angleOffset;
  
      public Star(float x, float y, PApplet p) 
      {
-         super(x,  y, p);  //RUBRIC super class (1.666%)
+         super(x, y, p);
+         this.radius = 10;  //size
+         this.points = 5;   //# of points
+         this.angleOffset = PConstants.TWO_PI / points;  //angle between two points
      }
  
-     //initiate flash
-     public static void startFlash() 
-     {
-         flash= true;
-         flashStartTime =System.currentTimeMillis(); //records the flash time
-     }
- 
-     //overdes the initial oval shape particle
      @Override
-     public void display()
+     public void update(float speedFactor)
       {
-         if (flash)
-          {
-             //seeds if flash duration passes
-             if (System.currentTimeMillis() - flashStartTime > FLASH_DURATION)
-              {
-                 flash = false; //stops white flash
-             } else 
-             {
-                 p.fill (255); //color of flash
-                 p.noStroke();
-             }
-         } else 
-         {
-             p.fill(225, 225, 51);//returns back to yellow color
-             p.noStroke();
-         }
+         super.update(speedFactor);
+     }
  
-         float x = position.x;
-         float y = position.y;
- 
-         //changed from triangle shapes put together to star
+     @Override
+     public void display() 
+     {
+         p.fill(255,255,51);
+         p.pushMatrix();    
+         p.translate(position.x, position.y); // moves origin
          p.beginShape();
-         for (int i = 0; i < 10; i++)
-          {
-             float angle = PApplet.TWO_PI / 10 * i; //divides into 10 parts https://processing.org/examples/star.html
-             float radius = (i % 2 == 0) ? 10 : 5; //outer larger, inner smaller
-             float sx = x + PApplet.cos(angle) * radius;
-             float sy = y + PApplet.sin(angle) * radius;
-             p.vertex(  sx, sy);
+         for (int i = 0; i < points * 2; i++) 
+         {
+             float angle = i * angleOffset / 2;
+             float r = (i % 2 == 0) ? radius : radius / 2;  // got this from processing website
+             float x = PApplet.cos(angle) * r;
+             float y = PApplet.sin(angle) * r;
+             p.vertex(x, y);
          }
-         p.endShape(PApplet.CLOSE);
+         p.endShape(PConstants.CLOSE);  
+         p.popMatrix();   
+     }
+ 
+     public float getRadius() 
+     {
+         return radius;
+     }
+ 
+     public float[] getBounds()
+      {
+         return new float[] { position.x - radius, position.y - radius, radius * 2, radius * 2 };
+     }
+ 
+     //detects bullet and star collision
+     public boolean checkCollision(PVector bullet)
+      {
+         float[] bounds = getBounds();
+         float bulletX = bullet.x;
+         float bulletY = bullet.y;
+ 
+         //sees if bullet is near star
+         return (bulletX > bounds[0] && bulletX < bounds[0] + bounds[2] &&  bulletY > bounds[1] && bulletY < bounds[1] + bounds[3]);
      }
  }
+ 
  
  

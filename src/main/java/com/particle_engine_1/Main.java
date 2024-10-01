@@ -1,31 +1,28 @@
+
 /*
  * Sophie Knox
- * Particle Engine 2
- * 9/28/24
+ * Particle Engine 3
+ * 9/30/24
  * This project creates three sublasses of particles: an alien spaceship, cow, and stars that are confined to bounce around in the screen
- * Each sublass has 10 instances and the background is moving static
- * This is the main class. It updates and draws the final product.
+ * This abstract class handles the spaceship, cow and stars
  * 
- * B or b creates a beam under spaceship (new)
- * S or s turns stars white for a second (new)
- * R or r randomizes cows position (old)
- * Up and Down arrows contols speed of all particles (old)
+ * I am attempting extra credit
+ * Goal of game: Shoot all the stars. Each star shot is a point. If you shoot a cow you automatically loose.
+ * Left and right arrows contol spaceship's x position
+ * spacebar shoots bullets
+ * IF YOU CANT BEAT GAME, CHANGE STAR # TO 1 IN PLAYSTATE
  * 
- * Mouse released changes alien color to a random color (new)
- * Mouse dragged released star particles (old)
- * Mouse position changes cow color (old)
- * Mouse click pushes away near by particles (old)
  * 
  * Cows collide with eachother
  */
 
- package com.particle_engine_1;
+//RUBRIC encapsulation 10%
+package com.particle_engine_1;
 
- import processing.core.PApplet;
- 
- 
- public class Main extends PApplet 
- {
+import processing.core.PApplet;
+
+public class Main extends PApplet 
+{
     static GameState currentState;
 
     public static void main(String[] args) 
@@ -38,21 +35,29 @@
         size(800, 600);
     }
 
-    public void setup()
-     {
-        currentState = new TitleState(this); 
+    public void setup() 
+    {
+        currentState = new TitleState(this); //starts with title state
     }
 
+    @Override
     public void draw() 
     {
-        currentState.drawState(); 
+        //clear the background
+        background(0); 
+
+        currentState.drawState();
+        if (currentState instanceof PlayState) 
+        {
+            ((PlayState) currentState).update(); //updates game elements
+        }
     }
 
-    public void keyPressed()
-     {
-        currentState.handleInput(); 
+    @Override
+    public void keyPressed() 
+    {
+        currentState.handleInput(); //imput handleing during different states
     }
 }
 
- 
  
