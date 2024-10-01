@@ -4,7 +4,7 @@
  * Particle Engine 3
  * 9/30/24
  * This project creates three sublasses of particles: an alien spaceship, cow, and stars that are confined to bounce around in the screen
- * This abstract class handles the spaceship, cow and stars
+ * This class controls the display. very little is in it because the other classes overide it.
  * 
  * I am attempting extra credit
  * Goal of game: Shoot all the stars. Each star shot is a point. If you shoot a cow you automatically loose.
